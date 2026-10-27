@@ -1,0 +1,94 @@
+# ========================================
+# RoadGuard — Smart Road Hazard Detection
+# .gitignore
+# ========================================
+
+# ----- Credentials & Secrets -----
+.env
+.env.local
+.env.production
+*.key
+*.pem
+service-account.json
+google-services.json
+supabase/.env
+supabase/secrets/
+
+# ----- Android -----
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/
+android/captures/
+android/**/*.iml
+android/.idea/
+android/app/src/main/assets/roadguard_model.tflite
+# Signed APK / AAB — never commit signed release builds
+android/app/release/
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# ----- Kotlin / Java -----
+*.class
+out/
+
+# ----- Python / ML -----
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+ml/models/*.pkl
+ml/models/*.joblib
+ml/models/*.bin
+ml/data/raw/
+ml/data/collected/
+
+# ----- Node / Deno (Edge Functions) -----
+node_modules/
+.deno/
+deno.lock
+
+# ----- Supabase -----
+supabase/.branches/
+supabase/.temp/
+supabase/functions/.env
+
+# ----- OS -----
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+
+# ----- IDE -----
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+.vs/
+
+# ----- Test / Coverage -----
+coverage/
+htmlcov/
+.coverage
+*.lcov
+test-results/
+
+# ----- Documentation build -----
+docs/_site/
+docs/.jekyll-cache/
+
+# ----- Firmware build outputs -----
+firmware/**/.pio/
+firmware/**/build/
+
+# ----- Log files -----
+*.log
+*.out

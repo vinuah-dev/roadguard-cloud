@@ -1,0 +1,12 @@
+android/
+firmware/
+supabase/
+docs/
+**/__pycache__/
+**/*.pyc
+server/.venv/
+server/.env
+server/data/
+server/tests/
+server/run_server.bat
+ml/models/*.joblib

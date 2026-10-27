@@ -1,0 +1,68 @@
+# RoadGuard production stack: PostgreSQL + FastAPI app + Caddy (HTTP and automatic HTTPS).
+#
+#   cp .env.example .env      # then set POSTGRES_PASSWORD
+#   docker compose up -d --build
+#
+# On AWS EC2 deploy/aws/user-data.sh does all of this automatically.
+
+name: roadguard
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: roadguard
+      POSTGRES_USER: roadguard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    # Sized for a 1 GB free-tier instance
+    command: ["postgres", "-c", "shared_buffers=64MB", "-c", "max_connections=40"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U roadguard -d roadguard"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    mem_limit: 256m
+
+  app:
+    build: ./RoadGuard
+    image: roadguard-api:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+      - path: deploy/aws/instance.env
+        required: false
+    environment:
+      # Set DATABASE_URL in .env to use Amazon RDS instead of the db container
+      DATABASE_URL: ${DATABASE_URL:-postgresql://roadguard:${POSTGRES_PASSWORD}@db:5432/roadguard}
+    expose:
+      - "8000"
+    mem_limit: 640m
+
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - path: deploy/aws/instance.env
+        required: false
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    mem_limit: 128m
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

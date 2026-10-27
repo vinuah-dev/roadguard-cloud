@@ -1,0 +1,23 @@
+# Caddy reverse proxy in front of the RoadGuard API (WebSockets are proxied automatically).
+{
+	admin off
+}
+
+(roadguard) {
+	encode zstd gzip
+	reverse_proxy app:8000
+	header {
+		-Server
+	}
+}
+
+# Plain HTTP on the bare public IP (or any other name)
+http:// {
+	import roadguard
+}
+
+# HTTPS with a free Let's Encrypt certificate for SITE_ADDRESS
+# (on EC2: <public-ip-with-dashes>.sslip.io, written by deploy/aws/start.sh)
+{$SITE_ADDRESS:localhost} {
+	import roadguard
+}

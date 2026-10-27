@@ -1,0 +1,21 @@
+node_modules/
+.next/
+dist/
+build/
+.env
+.env.*
+!.env.example
+venv/
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Local SQLite database and generated model (rebuilt from ml/data when missing)
+RoadGuard/server/data/
+RoadGuard/ml/models/*.joblib
+
+# Written on the EC2 instance at boot
+deploy/aws/instance.env
+
+# Local editor / agent config
+.claude/
